@@ -10,6 +10,11 @@ from ..models import Comment, Group, Post, User
 
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
+TEST_CACHE_SETTING = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
 
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
@@ -34,6 +39,7 @@ class PostCreateFormTests(TestCase):
         super().tearDownClass()
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
+    @override_settings(CACHES=TEST_CACHE_SETTING)
     def setUp(self):
         self.guest_client = Client()
         self.authorized_client = Client()
@@ -154,6 +160,7 @@ class CommentCreateFormTests(TestCase):
             group=cls.group
         )
 
+    @override_settings(CACHES=TEST_CACHE_SETTING)
     def setUp(self):
         self.guest_client = Client()
         self.authorized_client = Client()
